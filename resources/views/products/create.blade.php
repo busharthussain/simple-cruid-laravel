@@ -3,10 +3,10 @@
 
 <div class="card">
 
-    <form action="{{url('product')}}" method="POST" enctype="multipart/form-data">
+    <form action="{{url('products')}}" method="POST" enctype="multipart/form-data">
         @csrf
     <div class="card-body col-sm-12">
-        @include('product.partials._form')
+        @include('products.partials._form')
     </div>
     </form>
 </div>
