@@ -12,99 +12,64 @@
                         </h4>
                     </div>
                     <div class="card-body">
-                            <tbody class="table-responsive" >
+                        <div class="table-responsive">
                             <table class="table">
                                 <thead>
                                 <tr>
-                                    <th>Product Name</th>
-                                    <th>Product Image</th>
-                                    <th>Product Price</th>
-                                    <th>Product Brand</th>
+                                    <th>Name</th>
+                                    {{--<th>Product Image</th>--}}
+                                    <th>Price</th>
+                                    <th>Brand</th>
                                     <th>Action</th>
                                 </tr>
                                 </thead>
-
                                 <tbody id="page-data">
                                 </tbody>
                             </table>
                             <div class="paq-pager"></div>
-
+                        </div>
                     </div>
-
-
-
                 </div>
             </div>
-
-
         </div>
+        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+        <script
+                src="https://code.jquery.com/jquery-3.6.0.min.js">
+        </script>
+        <script>
+            $renderRoute = '{{ URL::route('products.show' , ['product' => 0]) }}';
+            $editRoute = '{{ URL::route('products.edit', ['product' => 0])}}';
+            $editRoute = $editRoute.substr(0, $editRoute.lastIndexOf("/"));
+            $editRoute = $editRoute.substr(0, $editRoute.lastIndexOf("/"));
+            $deleteRoute = '{{ URL::route('products.destroy', ['product' => 0])}}';
+            $token = "{{ csrf_token() }}";
+            $defaultType = 'renderProduct';
+            $page = 1;
+            $search = '';
+            $id = '';
+            $asc = 'asc';
+            $desc = 'desc';
+            $sortType = 'desc';
+            $sortColumn = 'a.id';
+            $dropDownFilters = {};
+            $(document).ready(function () {
+                $type = $defaultType;
+                updateFormData();
+                renderClient();
+                $('#search').val('');
+            });
 
-
-
-    </div>
-    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-    <script
-            src="https://code.jquery.com/jquery-3.6.0.min.js">
-    </script>
-    <script>
-        $renderRoute = '{{ URL::route('get.product.data') }}';
-        $editRoute = '{{ URL::route('products.edit', ['product' => 0])}}';
-        $editRoute = $editRoute.substr(0, $editRoute.lastIndexOf("/"));
-        $editRoute = $editRoute.substr(0, $editRoute.lastIndexOf("/"));
-        $deleteRoute = '{{ URL::route('products.destroy', ['product' => 0])}}';
-        $token = "{{ csrf_token() }}";
-        $defaultType = 'renderProduct';
-        $page = 1;
-        $search = '';
-        $id = '';
-        $asc = 'asc';
-        $desc = 'desc';
-        $sortType = 'desc';
-        $sortColumn = 'a.id';
-        $dropDownFilters = {};
-        $(document).ready(function () {
-            $type = $defaultType;
-            updateFormData();
-            renderClient();
-            $('#search').val('');
-        });
-
-        $('body').on('click', '.delete_product', function () {
-            var result = confirm(('are you sure delete'))
-            if (result) {
-                var id = $(this).attr('id');
-                id = id.split('_')[1]
+            var updateFormData = function () {
                 $formData = {
                     '_token': $token,
-                    id: $id,
-                }
-                $.ajax({
-                    url: 'products/' + id,
-                    type: 'DELETE',
-                    data: $formData,
-                    success: function (response) {
-                        $type = $defaultType;
-                        updateFormData();
-                        renderClient();
-
-                    },
-                });
-
+                    page: $page,
+                    search: $search,
+                    sortType: $sortType,
+                    sortColumn: $sortColumn,
+                    dropDownFilters: $dropDownFilters
+                };
             }
-
-        });
-
-        var updateFormData = function () {
-            $formData = {
-                '_token': $token,
-                page: $page,
-                search: $search,
-                sortType: $sortType,
-                sortColumn: $sortColumn,
-                dropDownFilters: $dropDownFilters
-            };
-        }
-    </script>
+        </script>
     {!! Html::script('assets/js/client.js')!!}
 
 

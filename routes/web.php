@@ -17,7 +17,7 @@ Route::get('/', function () {
     return view('layouts.layout');
 });
 Route::resource('products', 'App\Http\Controllers\ProductController');
-Route::post('/product/data','App\Http\Controllers\ProductController@getData')->name('get.product.data');
+
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

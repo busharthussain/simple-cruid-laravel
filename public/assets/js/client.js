@@ -1,4 +1,15 @@
 $(document).ready(function () {
+    $(document).on('click', '#add-record, #edit-record', function (e) {
+        e.preventDefault();
+        $type = 'addRecord';
+        $methodType = 'PUT';
+        if (this.id == 'add-record') {
+            $methodType = 'POST';
+        }
+        updateFormData();
+        renderClient();
+    });
+
     $(document).on("click", '.paq-pager ul.pagination a', function (e) {
         if (typeof ($isBladePaginator) === 'undefined') {
             e.preventDefault();
@@ -8,6 +19,7 @@ $(document).ready(function () {
             renderClient();
         }
     });
+
     $('body').on('click', '.delete_content', function (e) {
         e.preventDefault();
         if (typeof ($viewOnly) === 'undefined' || $viewOnly != 1) {
@@ -145,81 +157,12 @@ function renderClient(uniqueId = "") {
     };
 
     /**
-     * This is used to upload image
-     */
-    var uploadImage = function () {
-        $('.uploader').dmUploader({
-            url: $uploadImageRoute,
-            allowedTypes: 'image/*',
-            dataType: 'json',
-            onBeforeUpload: function (id) {
-                $('.uploader').data('dmUploader').settings.extraData = {
-                    "_token": $token,
-                    id: 1
-                };
-            },
-            onNewFile: function (id, file) {
-                $.danidemo.addFile('#demo-files', id, file);
-
-                /*** Begins Image preview loader ***/
-                if (typeof FileReader !== "undefined") {
-
-                    var reader = new FileReader();
-
-                    // Last image added
-                    var img = $('#demo-files').find('.demo-image-preview').eq(0);
-
-                    reader.onload = function (e) {
-                        img.attr('src', e.target.result);
-                    };
-
-                    reader.readAsDataURL(file);
-
-                } else {
-                    // Hide/Remove all Images if FileReader isn't supported
-                    $('#demo-files').find('.demo-image-preview').remove();
-                }
-                /*** Ends Image preview loader ***/
-
-            },
-            onUploadProgress: function (id, percent) {
-                var percentStr = percent + '%';
-                $.danidemo.updateFileProgress(id, percentStr);
-            },
-            onUploadSuccess: function (id, data) {
-                if (typeof ($isUploadImage) !== 'undefined') {
-                    $isUploadImage = true;
-                }
-                if (data.success == true) {
-                    if (typeof $imageType != 'undefined' && $imageType == true) {
-                        location.reload(true);
-                    }
-                    $.danidemo.updateFileStatus(id, 'success', 'Upload Complete');
-                    $.danidemo.updateFileProgress(id, '100%');
-                }
-            },
-            onUploadError: function (id, message) {
-                //notificationMsg(message, error);
-            },
-            onFileTypeError: function (file) {
-                notificationMsg('File \'' + file.name + '\' cannot be added: must be an Image', error);
-            },
-            onFileSizeError: function (file) {
-                //notificationMsg('File \'' + file.name + '\' cannot be added: size excess limit', error);
-            },
-            onFallbackMode: function (message) {
-                //notificationMsg('Browser not supported(do something else here!): ' + message, error);
-            }
-        });
-    };
-
-    /**
      * This is used to render grid routes
      */
     var callGridRender = function () {
         $.ajax({
             url: $renderRoute,
-            type: 'POST',
+            type: 'GET',
             data: $formData,
             success: function (data) {
 
@@ -239,66 +182,24 @@ function renderClient(uniqueId = "") {
     /**
      * This is common function used to add record
      */
-    var addRecord = function () {
-        ajaxStartStop();
+    function addRecord () {
         $.ajax({
             url: $addRecordRoute,
-            type: 'POST',
+            type: $methodType,
             data: $formData,
             success: function (data) {
-                $message = data.message;
-                if (data.success == true) {
-                    $id = data.id;
-                } else {
-                    if ($.isArray(data.message)) {
-                        $message = '';
-                        $.each(data.message, function (i, v) {
-                            $message += v + "\n";
-                        })
-                    }
-                }
-                swal("Done!", $message, "success");
-            },
-            error: function ($error) {
-
-            }
-        });
-    };
-
-    /**
-     * This is used to display data
-     */
-    var displayData = function (uniqueId) {
-        ajaxStartStop();
-        $.ajax({
-            url: $displayDataRoute,
-            type: 'POST',
-            data: $displayFormData,
-            success: function (data) {
-                if (data.success == true) {
-                    $('#' + uniqueId).html(data.data);
-                    if(data.pager !== 'undefined') {
-                        $('.paq-pager').html(data.pager);
-                    }
-                    if (typeof ($dragDrop) !== 'undefined' && $dragDrop == true) {
-                        draggableDropable();
-                    }
+                if (data.success === true) {
+                    toastr.success(data.message);
+                    window.location.href = $indexRoute;
                 }
             },
-            error: function ($error) {
-
-            }
-        });
-    };
-
-    var draggableDropable = function () {
-        $("body .draggable").draggable();
-        $("body .droppable").droppable({
-            drop: function (event, ui) {
-                let dropableId = $(this).attr('id');
-                var draggableId = ui.draggable.attr("id");
-                alert(dropableId);
-                alert(draggableId);
+            error: function (error) {
+                $message = '';
+                    $message = '';
+                    $.each(error.responseJSON.errors, function (i, v) {
+                        $message += v + "\n";
+                    });
+                swal("error!", $message, "error");
             }
         });
     };
@@ -330,25 +231,6 @@ function renderClient(uniqueId = "") {
         });
     };
 
-    /**
-     * This is used to view popup
-     */
-    var viewPopup = function () {
-        ajaxStartStop();
-        $.ajax({
-            url: $viewPopupRoute,
-            type: 'POST',
-            data: $formData,
-            success: function (data) {
-                $('#myModal').html(data.view);
-                $('#myModal').modal('show');
-            },
-            error: function ($error) {
-                notificationMsg($error, error);
-            }
-        });
-    };
-
     // rendering grid
     if ($type.indexOf('render') !== -1) {
         callGridRender();
@@ -356,15 +238,10 @@ function renderClient(uniqueId = "") {
         destroy();
     } else if($type.indexOf('addRecord') !== -1) {
         addRecord();
-    } else if($type.indexOf('viewPopup') !== -1) {
-        viewPopup();
-    } else if($type.indexOf('displayData') !== -1) {
-        displayData(uniqueId);
     }
 
     var functionList = {};
     functionList["sorter"] = sorter;
-    functionList['uploadImage'] = uploadImage;
     if ($type in functionList) {
         functionList[$type]();
     }

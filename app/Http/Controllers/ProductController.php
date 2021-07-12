@@ -2,12 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ProductRequest;
 use App\Models\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
+    private $success = false;
+    private $message = '';
+    private $data = [];
+
     /**
      * Display a listing of the resource.
      *
@@ -31,37 +36,81 @@ class ProductController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ProductRequest $request)
     {
-//        dd(23);
-        $fileimg = '';
-        if ($request->hasFile('file')) {
-            $request->validate(
-                [
-                    'image' => 'mime:jpg,png,jpag,svg'
-                ]
-            );
-            $file = $request->input('file');
-            $img = $request->input('file');
-            $fileimg = $request->file->hashName();
-            $image = $request->file('file');
-            $destinationPath = public_path('productimage/');
-            $image->move($destinationPath, $fileimg);
+        try {
+            parse_str($request->input('data'), $this->data);
+            Product::Create($this->data);
+            $this->success = true;
+            $this->message = 'Product Created Successfully';
+        } catch (Exception $e) {
+            $this->message = $e->getMessage();
         }
-        $obj = new Product();
-//        dd($obj);
-        $obj->product_name = $request->input('product_name');
-        $obj->product_price = $request->input('product_price');
-        $obj->product_brand = $request->input('product_brand');
-        $obj->product_image = $fileimg;
-        $obj->save();
 
-        return view ('products.index');
+        return response()->json(['success' => $this->success, 'message' => $this->message]);
     }
-    public function getData(Request $request)
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+        $data = Product::find($id);
+
+        return view('products.edit', compact('data'));
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @param  int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(ProductRequest $request, $id)
+    {
+        $product = Product::find($id);
+        try {
+            parse_str($request->input('data'), $this->data);
+            $product->update($this->data);
+            $this->success = true;
+            $this->message = 'Product Created Successfully';
+        } catch (Exception $e) {
+            $this->message = $e->getMessage();
+        }
+
+        return response()->json(['success' => $this->success, 'message' => $this->message]);
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+        $product = Product::find($id);
+        if ($product) {
+            $product->delete();
+        }
+
+        return response()->json(['success' => 'Product deleted successfully']);
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function show(Request $request)
     {
         $this->data = [];
         $this->params = [
@@ -75,82 +124,5 @@ class ProductController extends Controller
         $this->data = Product::getProductData($this->params);
 
         return response()->json($this->data);
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        dd(44);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-      $url = asset('productimage/');
-         $data  = Product::select( DB::raw("CONCAT('$url', '/' , product_image) as image"),'id','product_name','product_price','product_brand')->where('id',$id)->first();
-         return view ('products.edit' , compact('data'));
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        $fileimg = '';
-        if ($request->hasFile('file')) {
-            $request->validate(
-                [
-                    'image' => 'mime:jpg,png,jpag,svg'
-                ]
-            );
-            $file = $request->input('file');
-            $img = $request->input('file');
-            $fileimg = $request->file->hashName();
-            $image = $request->file('file');
-            $destinationPath = public_path('productimage/');
-            $image->move($destinationPath, $fileimg);
-        }
-        $data  = Product::where('id',$id)->first();
-        $fileimg =  (empty($fileimg) ? $data->product_image : $fileimg);
-            $data->update(['product_name'=> $request->input('product_name'),
-                'product_price'=>$request->input('product_price'),
-                'product_brand'=>$request->input('product_brand'),
-                'product_image'=>$fileimg]);
-
-            return view('products.index');
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-         $product =Product::find($id);
-         if(!empty($product->product_image)){
-             $path = public_path('productimage/'). '/'. $product->product_image;
-             if(file_exists($path)){
-                 unlink($path);
-             }
-         }
-         $product->delete();
-
-        return response()->json(['success' =>'Product deleted successfully']);
     }
 }

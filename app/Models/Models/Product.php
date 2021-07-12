@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\DB;
 class Product extends Model
 {
     use HasFactory;
-    protected $fillable = ['product_name', 'product_image','product_price','product_brand'];
+    protected $fillable = ['name', 'image','price','brand'];
     //    /**
 //     * Customer User Data
 //     * @param $params
@@ -22,9 +22,8 @@ class Product extends Model
     {
         $url = asset('productimage/');
         $sql = DB::table('products as p');
-        $sql->select('p.product_name','p.product_brand', 'p.product_price','p.id',
-            DB::raw("DATE_FORMAT(p.created_at, '%a, %b %d, %Y - %H:%i %p') as created_at"),
-            DB::raw("CONCAT('$url', '/' , product_image) as image")
+        $sql->select('p.name','p.brand', 'p.price','p.id',
+            DB::raw("DATE_FORMAT(p.created_at, '%a, %b %d, %Y - %H:%i %p') as created_at")
         );
         // search filters
         if (!empty($params['dropDownFilters'])) {
@@ -53,28 +52,20 @@ class Product extends Model
     {
 
         $arrFields = [
-//            'id' => [
-//                'name' => 'id',
-//                'isDisplay' => true
-//            ],
-            'product_name' => [
-                'name' => 'product_name',
-                'isDisplay' => true
-            ],
-            'image' => [
-                'name' => 'image',
-                'isDisplay' => true,
-            ],
-//
-            'product_price' => [
-                'name' => 'product_price',
-                'isDisplay' => true,
-            ],
-            'product_brand' => [
-                'name' => 'product_brand',
+            'name' => [
+                'name' => 'name',
                 'isDisplay' => true
             ],
 
+            'price' => [
+                'name' => 'price',
+                'isDisplay' => true,
+            ],
+
+            'brand' => [
+                'name' => 'brand',
+                'isDisplay' => true
+            ],
 
         ];
 
