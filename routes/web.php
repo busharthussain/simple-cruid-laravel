@@ -14,8 +14,9 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('layouts.layout');
+    return view('auth.login');
 });
+
 Route::resource('products', 'App\Http\Controllers\ProductController');
 
 Auth::routes();

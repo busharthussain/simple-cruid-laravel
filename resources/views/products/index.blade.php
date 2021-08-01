@@ -32,45 +32,44 @@
                 </div>
             </div>
         </div>
-        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-        <script
-                src="https://code.jquery.com/jquery-3.6.0.min.js">
-        </script>
-        <script>
-            $renderRoute = '{{ URL::route('products.show' , ['product' => 0]) }}';
-            $editRoute = '{{ URL::route('products.edit', ['product' => 0])}}';
-            $editRoute = $editRoute.substr(0, $editRoute.lastIndexOf("/"));
-            $editRoute = $editRoute.substr(0, $editRoute.lastIndexOf("/"));
-            $deleteRoute = '{{ URL::route('products.destroy', ['product' => 0])}}';
-            $token = "{{ csrf_token() }}";
-            $defaultType = 'renderProduct';
-            $page = 1;
-            $search = '';
-            $id = '';
-            $asc = 'asc';
-            $desc = 'desc';
-            $sortType = 'desc';
-            $sortColumn = 'a.id';
-            $dropDownFilters = {};
-            $(document).ready(function () {
-                $type = $defaultType;
-                updateFormData();
-                renderClient();
-                $('#search').val('');
-            });
+    </div>
 
-            var updateFormData = function () {
-                $formData = {
-                    '_token': $token,
-                    page: $page,
-                    search: $search,
-                    sortType: $sortType,
-                    sortColumn: $sortColumn,
-                    dropDownFilters: $dropDownFilters
-                };
-            }
-        </script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $renderRoute = '{{ URL::route('products.show' , ['product' => 0]) }}';
+        $editRoute = '{{ URL::route('products.edit', ['product' => 0])}}';
+        $editRoute = $editRoute.substr(0, $editRoute.lastIndexOf("/"));
+        $editRoute = $editRoute.substr(0, $editRoute.lastIndexOf("/"));
+        $deleteRoute = '{{ URL::route('products.destroy', ['product' => 0])}}';
+        $token = "{{ csrf_token() }}";
+        $defaultType = 'renderProduct';
+        $page = 1;
+        $search = '';
+        $id = '';
+        $asc = 'asc';
+        $desc = 'desc';
+        $sortType = 'desc';
+        $sortColumn = 'a.id';
+        $dropDownFilters = {};
+        $(document).ready(function () {
+            $type = $defaultType;
+            updateFormData();
+            renderClient();
+            $('#search').val('');
+        });
+
+        var updateFormData = function () {
+            $formData = {
+                '_token': $token,
+                page: $page,
+                search: $search,
+                sortType: $sortType,
+                sortColumn: $sortColumn,
+                dropDownFilters: $dropDownFilters
+            };
+        }
+    </script>
+
     {!! Html::script('assets/js/client.js')!!}
-
-
 @endsection

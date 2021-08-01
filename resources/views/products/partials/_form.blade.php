@@ -5,4 +5,9 @@
 {{Form::label('Brand','Brand')}}<br>
 {{Form::text('brand', null, array('class' => 'form-control' ,'name' => 'brand', 'id' => 'brand', 'placeholder' => 'Brand'))}}
 <br>
+<div class="form-group">
+    {{Form::label('Image','Image')}}<br>
+    <input type="file" class="image-preview-filepond" name="file" id="file">
+</div>
+
 <button type="submit" id="{{$id}}-record" class="btn btn-primary" style="float: right">{{$button}}</button>
