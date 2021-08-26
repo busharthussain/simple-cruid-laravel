@@ -3,6 +3,9 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\Api\{
+    WebsiteController, PostController,
+};
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -17,3 +20,6 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::post('/subscribe', [WebsiteController::class, 'subscribe']);
+Route::post('publish/post', [PostController::class, 'publishPost']);

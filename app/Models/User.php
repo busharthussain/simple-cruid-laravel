@@ -40,4 +40,8 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function websites(){
+        return $this->belongsToMany('App\Models\Website')->withTimestamps()->withPivot('user_id', 'website_id');
+    }
 }
