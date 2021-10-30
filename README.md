@@ -14,4 +14,4 @@ A simple laravel crud architecture. We can create simple to complex application 
 
 ## Contact
 .GitHub (<a href="https://github.com/busharthussain" target="_blank">Bushart Hussain</a>) </br>
-.Email (<a href="busharthussain@gmail.com" target="_blank">Bushart Hussain</a>)
+.Email (<a href="https://mail.google.com" target="_blank">busharthussain@gmail.com</a>)
