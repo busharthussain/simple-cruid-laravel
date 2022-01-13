@@ -4,7 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\Api\{
-    WebsiteController, PostController,UserController
+    WebsiteController, PostController,UserController,CustomerController
 };
 /*
 |--------------------------------------------------------------------------
@@ -29,3 +29,8 @@ Route::get('show/users', [UserController::class, 'show']);
 Route::get('search/users', [UserController::class, 'index']);
 Route::get('delete/users', [UserController::class, 'destroy']);
 Route::post('edit/users', [UserController::class, 'update']);
+
+
+Route::post('save/measurement', [CustomerController::class, 'store']);
+Route::post('get/customers', [CustomerController::class, 'show']);
+Route::get('delete/measurement', [CustomerController::class, 'destroy']);

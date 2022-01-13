@@ -54,7 +54,7 @@ class UserController extends Controller
 
         $this->success = true;
         $this->message = 'Saved successfully';
-        return response()->json(['success' => $this->success, 'message' => $this->message]);
+        return response()->json(['success' => $this->success, 'message' => $this->message,'data'=>$data]);
     }
 
     /**
