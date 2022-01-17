@@ -64,3 +64,6 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::put('profile/password', ['as' => 'profile.password', 'uses' => 'App\Http\Controllers\ProfileController@password']);
 });
 
+Route::get('/taylor', [App\Http\Controllers\Api\CustomerController::class, 'viewCustomer']);
+Route::post('/save/customer', [App\Http\Controllers\Api\CustomerController::class, 'createCustomer'])->name('create.customer');
+

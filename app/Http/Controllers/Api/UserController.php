@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use phpDocumentor\Reflection\Types\True_;
 use function PHPSTORM_META\elementType;
 
@@ -20,10 +21,12 @@ class UserController extends Controller
     public function index(Request $request)
     {
         $id = $request->input('id');
-        $search_user = User::where('id',$id)
-            ->first();
+        $search_user = User::where('id',$id)->first();
         if($search_user)
         {
+            unset($search_user->confirm_password);
+            $destinationPath = asset("taylorlogo");
+            $search_user->logo = $destinationPath.'/'.$search_user->logo;
             $this->message ="Data Founded";
         }
         else
@@ -41,20 +44,54 @@ class UserController extends Controller
      */
     public function create(Request $request)
     {
-        $data = new User();
-        $data->first_name = $request->input('first_name');
-        $data->name = $request->input('name');
-        $data->email = $request->input('email');
-        $data->password = $request->input('password');
-        $data->last_name = $request->input('last_name');
-        $data->shop_name = $request->input('shop_name');
-        $data->address = $request->input('address');
-        $data->contact = $request->input('contact');
-        $data->save();
+        $user = [];
+        $imageData = $request->all();
+        $validations = [
+            'first_name' => 'required',
+            'last_name' => 'required',
+            'shop_name' => 'required',
+            'address' => 'required',
+            'password' => 'required',
+            'confirm_password' => 'required',
+            'contact' => 'unique:users,contact,'
 
-        $this->success = true;
-        $this->message = 'Saved successfully';
-        return response()->json(['success' => $this->success, 'message' => $this->message]);
+        ];
+        $validator = \Validator::make($imageData, $validations);
+        if ($validator->fails()) {
+            $this->message = formatErrors($validator->errors()->toArray());
+        }
+        else{
+
+            if ($request->input('password') == $request->input('confirm_password')){
+                $data = new User();
+                $data->first_name = $request->input('first_name');
+                $data->last_name = $request->input('last_name');
+                $data->shop_name = $request->input('shop_name');
+                $data->address = $request->input('address');
+                $data->contact = $request->input('contact');
+                $data->password = Hash::make($request->input('password'));
+                $data->confirm_password = Hash::make($request->input('confirm_password'));
+                $data->logo = $request->input('logo');
+                $data->save();
+                $user = User::find($data->id);
+                $token = $user->createToken('Taylor')->accessToken;
+                $user->token = $token;
+                unset($user->confirm_password);
+                unset($user->logo);
+                $this->success = true;
+                $this->message = 'Saved successfully';
+            }
+            else{
+                $this->success = false;
+                $this->message = 'Password not matched';
+                $user = [];
+            }
+        }
+
+
+
+
+        return response()->json(['success' => $this->success, 'message' => $this->message, 'data'=>$user]);
     }
 
     /**
@@ -136,16 +173,41 @@ class UserController extends Controller
     public function destroy(Request $request)
     {
         $id = $request->input('id');
-        User::where('id', $id)->delete();
+        $user = User::find($id);
+        if ($user){
+            $user->delete();
+            $this->success = true;
+            $this->message ="Delete Successfully";
+        }
+        else{
+            $this->success = false;
+            $this->message ="Not Founded";
+        }
 
-        $this->success = true;
-        $this->message ="Delete Successfully";
 
         return response()->json(['success' => $this->success, 'message' => $this->message]);
     }
 
 
+    public function logo(Request $request){
 
+        $destinationPath = public_path("taylorlogo");
+        $data = base64_decode(preg_replace('/^data:image\/\w+;base64,/i', '', $request->input('image')));
+        $logo = time() . uniqid(rand()) . '.png';
+        if (!file_exists($destinationPath)) {
+            mkdir($destinationPath, 0777, true);
+        }
+        $tempFile = $destinationPath . '/' . $logo;
+        file_put_contents($tempFile, $data);
+        $user = User::find($request->input('user_id'));
+        $user->logo = $logo;
+        $user->save();
+
+        $this->success = true;
+        $this->message ="Save Logo Successfully";
+
+        return response()->json(['success' => $this->success, 'message' => $this->message]);
+    }
 
 
 }
