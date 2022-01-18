@@ -54,6 +54,8 @@ class CreateCustomersTable extends Migration
             $table->string('book_no')->nullable();
             $table->string('design_no')->nullable();
             $table->string('note')->nullable();
+            $table->integer('price')->nullable();
+
             $table->timestamps();
         });
     }

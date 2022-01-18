@@ -64,3 +64,8 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::put('profile/password', ['as' => 'profile.password', 'uses' => 'App\Http\Controllers\ProfileController@password']);
 });
 
+Route::get('/taylor', [App\Http\Controllers\Api\CustomerController::class, 'viewCustomer']);
+Route::get('get/customers', [App\Http\Controllers\Api\CustomerController::class, 'getCustomers'])->name('customer.show');
+Route::post('/save/customer', [App\Http\Controllers\Api\CustomerController::class, 'createCustomer'])->name('create.customer');
+Route::post('customer/delete', [App\Http\Controllers\Api\CustomerController::class, 'deleteCustomer'])->name('delete.customer');
+

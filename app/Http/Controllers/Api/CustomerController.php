@@ -3,113 +3,70 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreCustomer;
 use App\Models\Customer;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
-use function Psy\sh;
+use Illuminate\Support\Facades\DB;
 
 class CustomerController extends Controller
 {
-    private $message = '';
-    private $success = false;
-     /* Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+    public function viewCustomer()
     {
-        //
+        $obj = Customer::all();
+        return view('taylor.taylor-customer', compact('obj'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function createCustomer(Request $request)
     {
-        //
-    }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-       Customer::insert([$request->toArray()]);
+        unset($request['_token']);
+        $obj = $request->all();
+
+        $obj['created_at'] = Carbon::now();
+        $obj['updated_at'] = Carbon::now();
+        Customer::insert($obj);
 
         $this->success = true;
         $this->message = 'Saved successfully';
+        return response()->json(['success' => $this->success, 'message' => $this->message, 'data' => $obj]);
+
+    }
+
+    public function deleteCustomer(Request $request)
+    {
+        Customer::where('id', $request->input('id'))->delete();
+
+        $this->success = true;
+        $this->message = 'Delete successfully';
         return response()->json(['success' => $this->success, 'message' => $this->message]);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Request $request)
+    public function editCustomer(Request $request)
     {
-        $show = Customer::select('first_name','contact','id')->where('user_id',$request->input('user_id'));
 
-        if(!empty($request->input('search'))){
-            $search = '%'.$request->input('search').'%';
-            $show = $show->where('contact','Like',$search)
-            ->orWhere('first_name','Like',$search);
+        $id = $request->input('customer_id');
+        $data = Customer::where('customer_id', $id)->first();
+//        dd($request->all());
+        if (!empty($data)) {
+            $data->update($request->all());
+        }
+        $this->success = true;
+        $this->message = 'Edit successfully';
+        return response()->json(['success' => $this->success, 'message' => $this->message]);
+    }
+    public function getCustomers(){
+        $obj = Customer::all();
+        $obj = $obj->toArray();
+        foreach ($obj as $k=>$row){
+            unset($obj[$k]['id']);
+            unset($obj[$k]['user_id']);
         }
 
-//        $show = $show->get()->toArray();
-//        $show = array_column($show,'contact');
-        $arr = [];
-//        foreach ($show as $k=>$row){
-//            $arr[] = $row['contact'];
-//        }
-//        dd($arr);
-        $this->success = true;
-        $this->message = 'Saved successfully';
-        return response()->json(['success' => $this->success, 'message' => $this->message, 'data'=> $show]);
-    }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
+//        dd($obj);
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
+        return response()->json(['success' => true, 'message' => '','data'=>$obj]);
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Request $request)
-    {
-        $id = $request->input('id');
-        Customer::where('id', $id)->delete();
-
-        $this->success = true;
-        $this->message ="Delete Successfully";
-
-        return response()->json(['success' => $this->success, 'message' => $this->message]);
     }
 }
