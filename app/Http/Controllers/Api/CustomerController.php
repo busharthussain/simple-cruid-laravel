@@ -42,31 +42,35 @@ class CustomerController extends Controller
         return response()->json(['success' => $this->success, 'message' => $this->message]);
     }
 
-    public function editCustomer(Request $request)
+    public function editCustomer($id)
     {
+        $obj = Customer::where('id', $id)->first();
+        return view('taylor.edit-customer', compact('obj'));
 
-        $id = $request->input('customer_id');
-        $data = Customer::where('customer_id', $id)->first();
-//        dd($request->all());
-        if (!empty($data)) {
-            $data->update($request->all());
-        }
-        $this->success = true;
-        $this->message = 'Edit successfully';
-        return response()->json(['success' => $this->success, 'message' => $this->message]);
     }
     public function getCustomers(){
-        $obj = Customer::all();
-        $obj = $obj->toArray();
-        foreach ($obj as $k=>$row){
-            unset($obj[$k]['id']);
-            unset($obj[$k]['user_id']);
-        }
+        $obj = Customer::select('customer_id','first_name','last_name','contact','address','length','shoulder','neck','chest',
+            'waist','hip','gheera_gool','gheera_choras','arm','moda','kaff','kaff_width','arm_gool','arm_moori','collar','bean',
+            'shalwar_length','shalwar_gheera','shalwar_paincha','pocket_front','pocket_side','pocket_shalwar','pent_length',
+            'pent_waist','pent_hip','pent_paincha','single_salai','double_salai','triple_salai','design','book_no','design_no',
+            'note','price','id')->get()->toArray();
+//        $obj = $obj->toArray();
+
 
 
 //        dd($obj);
 
         return response()->json(['success' => true, 'message' => '','data'=>$obj]);
 
+    }
+    public function updateCustomer(Request $request){
+
+        unset($request['_token']);
+        $data = $request->all();
+        Customer::where('id', $request->input('id'))->update($data);
+
+        $this->success = true;
+        $this->message = 'Data Updated successfully';
+        return response()->json(['success' => $this->success, 'message' => $this->message]);
     }
 }

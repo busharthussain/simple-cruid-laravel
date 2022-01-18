@@ -68,4 +68,6 @@ Route::get('/taylor', [App\Http\Controllers\Api\CustomerController::class, 'view
 Route::get('get/customers', [App\Http\Controllers\Api\CustomerController::class, 'getCustomers'])->name('customer.show');
 Route::post('/save/customer', [App\Http\Controllers\Api\CustomerController::class, 'createCustomer'])->name('create.customer');
 Route::post('customer/delete', [App\Http\Controllers\Api\CustomerController::class, 'deleteCustomer'])->name('delete.customer');
+Route::get('customer/edit/{id}', [App\Http\Controllers\Api\CustomerController::class, 'editCustomer']);
+Route::post('customer/update', [App\Http\Controllers\Api\CustomerController::class, 'updateCustomer'])->name('update.customer');
 

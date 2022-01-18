@@ -18,7 +18,7 @@
 
 <h3>Customer</h3>
 
-<label>Code</label>&nbsp;<input type="number" name="customer_code" id="customer_code">&nbsp;&nbsp;&nbsp;
+<label>Id</label>&nbsp;<input type="number" name="customer_id" id="customer_id">&nbsp;&nbsp;&nbsp;
 <label>First_name</label>&nbsp;<input type="text" name="first_name" id="first_name">&nbsp;&nbsp;&nbsp;
 <label>Last_name</label>&nbsp;<input type="text" name="last_name" id="last_name">&nbsp;&nbsp;&nbsp;
 <label>Address</label>&nbsp;<input type="text" name="address" id="address">&nbsp;&nbsp;&nbsp;
@@ -62,7 +62,8 @@
 
 <table>
     <thead>
-    <th>Code</th>
+    {{--<th>Id</th>--}}
+    <th>Customer Id</th>
     <th>First Name</th>
     <th>Last Name</th>
     <th>Address</th>
@@ -105,17 +106,8 @@
     </thead>
     <tbody id="customer_data">
 
-
     </tbody>
 </table>
-
-
-
-
-
-
-
-
 
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -124,6 +116,7 @@
     $saveCustomer = '{{URL::route('create.customer')}}';
     $deleteCustomer = '{{URL::route('delete.customer')}}';
     $showCustomer = '{{URL::route('customer.show')}}';
+    {{--$editCustomer = '{{URL::route('customer.edit')}}';--}}
     $token = "{{ csrf_token() }}";
     $(document).ready(function () {
         getCustomers();
@@ -132,7 +125,7 @@
     $('body').on('click', '#save-data', function () {
         $formData = {
             '_token': $token,
-            customer_code: $('#customer_code').val(),
+            customer_id: $('#customer_id').val(),
             first_name: $('#first_name').val(),
             last_name: $('#last_name').val(),
             address: $('#address').val(),
@@ -181,7 +174,7 @@
                 if (response.success == true) {
                     getCustomers();
                     alert('Data saved successfully');
-                    $('#customer_code').val(''),
+                    $('#customer_id').val(''),
                         $('#first_name').val(''),
                         $('#last_name').val(''),
                         $('#address').val(''),
@@ -207,7 +200,7 @@
             success: function (response) {
                 if (response.success == true) {
                     getCustomers();
-                    alert('Data saved successfully');
+                    alert('Data delete successfully');
 
                 } else {
                     toastr.error('Something went wrong!');
@@ -227,8 +220,13 @@
                         $.each(response.data, function (i, v) {
                             var tabletData = '';
                             $.each(v, function (ii, vv) {
-                                tabletData += '<td>'+vv+'</td>'
+                                if(ii == 'id'){
+                                    tabletData += '<td xmlns="http://www.w3.org/1999/html"><button class="delete-customer" id="'+vv+'">Delete</button><br><br><br><button class="edit-customer" id="'+vv+'">Edit</button></td>'
+                                }else{
+                                    tabletData += '<td>'+vv+'</td>'
+                                }
                             })
+
                             var html = '<tr>'+tabletData+'</tr>';
                             $('#customer_data').append(html);
                         });
@@ -236,6 +234,11 @@
             }
         });
     }
+    $('body').on('click', '.edit-customer', function () {
+        var id = $(this).attr('id');
+        var rout = '{{url('customer/edit')}}'+'/'+id;
+        window.location.href = rout;
+    })
 
 
 </script>
