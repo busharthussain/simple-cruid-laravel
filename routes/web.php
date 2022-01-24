@@ -64,10 +64,14 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::put('profile/password', ['as' => 'profile.password', 'uses' => 'App\Http\Controllers\ProfileController@password']);
 });
 
-Route::get('/taylor', [App\Http\Controllers\Api\CustomerController::class, 'viewCustomer']);
+Route::get('/customer', [App\Http\Controllers\Api\CustomerController::class, 'viewCustomer']);
 Route::get('get/customers', [App\Http\Controllers\Api\CustomerController::class, 'getCustomers'])->name('customer.show');
 Route::post('/save/customer', [App\Http\Controllers\Api\CustomerController::class, 'createCustomer'])->name('create.customer');
 Route::post('customer/delete', [App\Http\Controllers\Api\CustomerController::class, 'deleteCustomer'])->name('delete.customer');
 Route::get('customer/edit/{id}', [App\Http\Controllers\Api\CustomerController::class, 'editCustomer']);
 Route::post('customer/update', [App\Http\Controllers\Api\CustomerController::class, 'updateCustomer'])->name('update.customer');
 
+
+Route::get('/taylor', [App\Http\Controllers\Api\UserController::class, 'showUser']);
+Route::post('/user/save', [App\Http\Controllers\Api\UserController::class, 'saveUser'])->name('signup.user');
+Route::post('/login/user', [App\Http\Controllers\Api\UserController::class, 'loginUser'])->name('login.user');

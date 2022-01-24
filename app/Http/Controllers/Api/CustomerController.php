@@ -73,4 +73,5 @@ class CustomerController extends Controller
         $this->message = 'Data Updated successfully';
         return response()->json(['success' => $this->success, 'message' => $this->message]);
     }
+
 }

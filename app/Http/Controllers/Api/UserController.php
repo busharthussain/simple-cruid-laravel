@@ -3,9 +3,12 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Mail\ForgetPasswordMail;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use phpDocumentor\Reflection\Types\True_;
 use function PHPSTORM_META\elementType;
 
@@ -209,5 +212,37 @@ class UserController extends Controller
         return response()->json(['success' => $this->success, 'message' => $this->message]);
     }
 
+    public function showUser(){
+        return view('taylor.taylor-dashboard');
+    }
 
+    public function saveUser(Request $request){
+
+        unset($request['_token']);
+        $obj = $request->all();
+
+        $obj['created_at'] = Carbon::now();
+        $obj['updated_at'] = Carbon::now();
+        User::insert($obj);
+
+        $this->success = true;
+        $this->message = 'Saved successfully';
+        return response()->json(['success' => $this->success, 'message' => $this->message,]);
+    }
+
+    public function loginUser(Request $request){
+
+        $contact = $request->input('contact');
+        $password = $request->input('password');
+        $obj = User::where(['contact'=>$contact, 'password'=>$password,])->first();
+
+        if($obj){
+            $this->success = true;
+            $this->message = 'Login successfully';
+            return response()->json(['success' => $this->success, 'message' => $this->message,]);
+        }
+        else{
+            return redirect()->back();
+        }
+    }
 }

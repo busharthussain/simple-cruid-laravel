@@ -1,3 +1,7 @@
+@extends('layouts.layout')
+@section('title' , 'Customer')
+@section('content')
+
 <style>
     table {
         font-family: arial, sans-serif;
@@ -236,10 +240,11 @@
     }
     $('body').on('click', '.edit-customer', function () {
         var id = $(this).attr('id');
-        var rout = '{{url('customer/edit')}}'+'/'+id;
+        var rout = '{{url('loginuser/')}}'+'/'+id;
         window.location.href = rout;
     })
 
 
 </script>
 
+@endsection
