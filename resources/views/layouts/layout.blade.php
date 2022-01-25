@@ -61,7 +61,7 @@
         {{--</li>--}}
 
         <li class="nav-item active">
-            <a class="nav-link" href="{{url('customer')}}">
+            <a class="nav-link" href="{{url('get/customers')}}">
                 <i class="fas fa-user"></i>
                 <span>Customers</span></a>
         </li>
