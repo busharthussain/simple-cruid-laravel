@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
+
 /**
  * This is used to format errors
  *
@@ -33,4 +35,13 @@ function formatErrors($data)
     }
 
     return $errors;
+}
+
+function loginId(){
+    $id = 0;
+    if (Auth::check())
+    {
+        $id = Auth::user()->id;
+    }
+    return $id;
 }

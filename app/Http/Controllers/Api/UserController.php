@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Mail\ForgetPasswordMail;
+use App\Models\Customer;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -120,6 +121,43 @@ class UserController extends Controller
         $this->success = true;
         $this->message = 'Saved successfully';
         return response()->json(['success' => $this->success, 'message' => $this->message, 'data'=> $show]);
+    }
+    public function getUserName(){
+        $name = User::select('name','image')->where('id',loginId())->first();
+
+        $this->success = true;
+        return response()->json(['success' => $this->success, 'data'=> $name]);
+    }
+    public function setUserName(){
+        $name = User::select('name','address','image')->where('id',loginId())->first();
+        $name->count = Customer::where('user_id',loginId())->count();
+
+        $this->success = true;
+        return response()->json(['success' => $this->success, 'data'=> $name]);
+    }
+    public function setUserImage(Request $request){
+
+        $profileImage = null;
+//        dd($request);
+        if ($request->hasFile('image')) {
+            $request->validate([
+                'file' => 'mimes:jpeg,bmp,png'
+            ]);
+            $file = $request->input('image');
+            $profileImage = $request->image->hashName();
+
+            $image = $request->file('image');
+            $destinationPath = public_path('userimages');
+            if (!file_exists($destinationPath)) {
+                mkdir($destinationPath, 0777, true);
+            }
+            $image->move($destinationPath, $profileImage);
+        }
+          $obj = User::find(loginId());
+        $obj->image = $profileImage;
+        $obj->save();
+        $this->success = true;
+        return response()->json(['success' => $this->success, 'data'=> $obj]);
     }
 
     /**
@@ -244,5 +282,10 @@ class UserController extends Controller
         else{
             return redirect()->back();
         }
+    }
+
+    public function userProfile(){
+        $data = User::find(loginId());
+        return view('taylor.user-profile', compact('data'));
     }
 }

@@ -25,6 +25,7 @@ class CustomerController extends Controller
 
         $obj['created_at'] = Carbon::now();
         $obj['updated_at'] = Carbon::now();
+        $obj['user_id'] = loginId();
         Customer::insert($obj);
 
         $this->success = true;
@@ -33,8 +34,9 @@ class CustomerController extends Controller
 
     }
 
-    public function deleteCustomer(Request $request)
-    {
+    public function deleteCustomer(Request $request){
+
+
         Customer::where('id', $request->input('id'))->delete();
 
         $this->success = true;
@@ -48,18 +50,15 @@ class CustomerController extends Controller
         return view('taylor.edit-customer', compact('obj'));
 
     }
-    public function getCustomers(){
-        $obj = Customer::select('customer_id','first_name','last_name','contact','address','id')->get()->toArray();
-//
-
-
-
-
-//        dd($obj);
+    public function showCustomersView(){
+        $obj = Customer::select('customers.id','customers.first_name','customers.last_name','customers.contact','customers.address','u.name')
+            ->where('user_id',loginId())->join('users as u', 'u.id','=','customers.user_id')->get()->toArray();
+        return view('taylor.all-customer');
 
         return response()->json(['success' => true, 'message' => '','data'=>$obj]);
 
     }
+
     public function updateCustomer(Request $request){
 
         unset($request['_token']);
@@ -69,6 +68,20 @@ class CustomerController extends Controller
         $this->success = true;
         $this->message = 'Data Updated successfully';
         return response()->json(['success' => $this->success, 'message' => $this->message]);
+    }
+
+    public function getCustomers(){
+        $obj = Customer::select('customers.id','customers.first_name','customers.last_name','customers.contact','customers.address','u.name')
+            ->where('user_id',loginId())->join('users as u', 'u.id','=','customers.user_id')->get()->toArray();
+
+        return response()->json(['success' => true, 'message' => '','data'=>$obj]);
+
+    }
+    public function searchCustomer(Request $request)
+    {
+        $obj = Customer::where('id', $request->input('id'))->first();
+        return response()->json(['success' => true, 'message' => '','data'=>$obj]);
+
     }
 
 }

@@ -65,13 +65,20 @@ Route::group(['middleware' => 'auth'], function () {
 });
 
 Route::get('/customer', [App\Http\Controllers\Api\CustomerController::class, 'viewCustomer']);
-Route::get('get/customers', [App\Http\Controllers\Api\CustomerController::class, 'getCustomers'])->name('customer.show');
+Route::get('get/customers', [App\Http\Controllers\Api\CustomerController::class, 'showCustomersView']);
+Route::get('get/all/customers', [App\Http\Controllers\Api\CustomerController::class, 'getCustomers'])->name('customer.show');
 Route::post('/save/customer', [App\Http\Controllers\Api\CustomerController::class, 'createCustomer'])->name('create.customer');
 Route::post('customer/delete', [App\Http\Controllers\Api\CustomerController::class, 'deleteCustomer'])->name('delete.customer');
-Route::get('customer/edit/{id}', [App\Http\Controllers\Api\CustomerController::class, 'editCustomer']);
+Route::get('customer/edit/{id}', [App\Http\Controllers\Api\CustomerController::class, 'editCustomer'])->name('customer.edit');
+Route::post('customer/search', [App\Http\Controllers\Api\CustomerController::class, 'searchCustomer'])->name('customer.search');
 Route::post('customer/update', [App\Http\Controllers\Api\CustomerController::class, 'updateCustomer'])->name('update.customer');
 
 
 Route::get('/taylor', [App\Http\Controllers\Api\UserController::class, 'showUser']);
 Route::post('/user/save', [App\Http\Controllers\Api\UserController::class, 'saveUser'])->name('signup.user');
 Route::post('/login/user', [App\Http\Controllers\Api\UserController::class, 'loginUser'])->name('login.user');
+Route::post('/getinfo', [App\Http\Controllers\Api\UserController::class, 'getUserName'])->name('user.info');
+Route::post('/user/name', [App\Http\Controllers\Api\UserController::class, 'setUserName'])->name('user.name');
+Route::post('/user/image', [App\Http\Controllers\Api\UserController::class, 'setUserImage'])->name('user.image');
+
+Route::get('/profile', [App\Http\Controllers\Api\UserController::class, 'userProfile']);

@@ -1,3 +1,7 @@
+@extends('layouts.layout')
+@section('title' , 'Customer')
+@section('content')
+
 <style>
     table {
         font-family: arial, sans-serif;
@@ -19,45 +23,10 @@
 <table>
     <thead>
     {{--<th>Id</th>--}}
-    <th>Customer Id</th>
-    <th>First Name</th>
-    <th>Last Name</th>
+    <th>Nr</th>
+    <th>Name</th>
     <th>Address</th>
     <th>Contact</th>
-    <th>Length</th>
-    <th>Shoulder</th>
-    <th>Neck</th>
-    <th>Chest</th>
-    <th>Waist</th>
-    <th>Hip</th>
-    <th>Gheera Gool</th>
-    <th>Gheera Choras</th>
-    <th>Arm</th>
-    <th>Moda</th>
-    <th>Kaff</th>
-    <th>Kaff Width</th>
-    <th>Arm Gool</th>
-    <th>Arm Moori</th>
-    <th>Collar</th>
-    <th>Bean</th>
-    <th>Shalwar Length</th>
-    <th>Shalwar Gheera</th>
-    <th>Shalwar Paincha</th>
-    <th>Pocket Front</th>
-    <th>Pocket Side</th>
-    <th>Pocket Shalwar</th>
-    <th>Pent Length</th>
-    <th>Pent Waist</th>
-    <th>Pent Hip</th>
-    <th>Pent Paincha</th>
-    <th>Single Salai</th>
-    <th>Double Salai</th>
-    <th>Triple Salai</th>
-    <th>Design</th>
-    <th>Book No</th>
-    <th>Design No</th>
-    <th>Note</th>
-    <th>Price</th>
     <th>Action</th>
     </thead>
     <tbody id="customer_data">
@@ -67,34 +36,66 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
+
+    $deleteCustomer = '{{URL::route('delete.customer')}}';
     $showCustomer = '{{URL::route('customer.show')}}';
         $token = "{{ csrf_token() }}";
     $(document).ready(function () {
-
+        getCustomers()
+    });
 
     function getCustomers() {
+            $.ajax({
+                url: $showCustomer,
+                type: 'GET',
+                data: {},
+                success: function (response) {
+                    if (response.success == true) {
+                        $('#customer_data').html('');
+                        // console.log(response.data);
+                            $.each(response.data, function (i, v) {
+
+
+                                var html = '<tr>' +
+                                    '<td>'+v.id+'</td>' + '<td>'+v.first_name+'&nbsp;&nbsp;'+v.last_name+'</td>' +
+                                    '<td>'+v.address+'</td>' + '<td>'+v.contact+'</td>' +
+                                    '<td><button class="edit-customer" id='+v.id+'>Edit</button>&nbsp;&nbsp;&nbsp;&nbsp;<button class="delete-customer" id='+v.id+'>Delete</button></td>' +
+                                    '</tr>';
+                                $('#customer_data').append(html);
+                            });
+                    }
+                }
+            });
+        }
+
+    $('body').on('click', '.delete-customer', function () {
+
+        $formData = {
+            '_token': $token,
+            id: $(this).attr('id')
+
+        };
         $.ajax({
-            url: $showCustomer,
-            type: 'GET',
-            data: {},
+            url: $deleteCustomer,
+            type: 'POST',
+            data: $formData,
             success: function (response) {
                 if (response.success == true) {
-                    $('#customer_data').html('');
-                    $.each(response.data, function (i, v) {
-                        var tabletData = '';
-                        $.each(v, function (ii, vv) {
-                            if (ii == 'id') {
-                                tabletData += '<td xmlns="http://www.w3.org/1999/html"><button class="delete-customer" id="' + vv + '">Delete</button><br><br><br><button class="edit-customer" id="' + vv + '">Edit</button></td>'
-                            } else {
-                                tabletData += '<td>' + vv + '</td>'
-                            }
-                        })
+                    getCustomers()
+                    alert('Data Delete Successfully');
 
-                        var html = '<tr>' + tabletData + '</tr>';
-                        $('#customer_data').append(html);
-                    });
+                } else {
+                    toastr.error('Something went wrong!');
                 }
             }
         });
-    }
+
+    })
+
+    $('body').on('click', '.edit-customer', function () {
+        var id = $(this).attr('id');
+        var rout = '{{url('customer/edit')}}'+'/'+id;
+        window.location.href = rout;
+    })
 </script>
+@endsection
