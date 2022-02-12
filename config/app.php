@@ -93,7 +93,7 @@ return [
     |
     */
 
-    'fallback_locale' => 'en',
+    'fallback_locale' => 'ur',
 
     /*
     |--------------------------------------------------------------------------
@@ -161,7 +161,9 @@ return [
         Illuminate\Translation\TranslationServiceProvider::class,
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
-
+        LaravelFCM\FCMServiceProvider::class,
+        Maatwebsite\Excel\ExcelServiceProvider::class,
+        niklasravnsborg\LaravelPdf\PdfServiceProvider::class,
         /*
          * Package Service Providers...
          */
@@ -230,6 +232,10 @@ return [
         'Html' => Collective\Html\HtmlFacade::class,
         'Form' => 'Collective\Html\FormFacade',
         'Html' => 'Collective\Html\HtmlFacade',
+        'FCM'      => LaravelFCM\Facades\FCM::class,
+        'FCMGroup' => LaravelFCM\Facades\FCMGroup::class,
+        'Excel' => Maatwebsite\Excel\Facades\Excel::class,
+        'PDF' => niklasravnsborg\LaravelPdf\Facades\Pdf::class,
 
     ],
 

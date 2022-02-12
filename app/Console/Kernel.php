@@ -13,7 +13,8 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        //
+        Commands\DemoCron::class,
+        Commands\AlertCrone::class,
     ];
 
     /**
@@ -24,7 +25,10 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')->hourly();
+        $schedule->command('push:notification')
+            ->everyMinute();
+        $schedule->command('push:notification')
+            ->daily();
     }
 
     /**

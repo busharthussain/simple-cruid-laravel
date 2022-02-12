@@ -4,7 +4,9 @@
     .bg-gradient-primary{
         background-color: #0b3251;
     }
+
 </style>
+
 <head>
     {{--google recaptcaha--}}
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
@@ -28,6 +30,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css"/>
 
 </head>
+{{\App::setLocale(getLanguage())}}
 
 <body id="page-top">
 
@@ -52,7 +55,7 @@
         <li class="nav-item active">
             <a class="nav-link" href="/taylor">
                 <i class="fas fa-fw fa-tachometer-alt"></i>
-                <span>Dashboard</span></a>
+                <span>{{trans('user.dashboard')}}</span></a>
         </li>
 
         <!-- Divider -->
@@ -67,13 +70,13 @@
         <li class="nav-item active">
             <a class="nav-link" href="{{url('get/customers')}}">
                 <i class="fas fa-user"></i>
-                <span>Customers</span></a>
+                <span>{{trans('user.customer')}}</span></a>
         </li>
 
         <li class="nav-item active">
             <a class="nav-link" href="{{url('customer')}}">
                 <i class="fas fa-user"></i>
-                <span>New Order</span></a>
+                <span>{{trans('user.neworder')}}</span></a>
         </li>
 
 
@@ -271,19 +274,21 @@
                         <!-- Dropdown - User Information -->
                         <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
                              aria-labelledby="userDropdown">
-                            <a class="dropdown-item" href="{{url('profile')}}">
+                            <a class="dropdown-item" href="{{url('user/profile')}}">
                                 <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                                 Profile
                             </a>
-                            <a class="dropdown-item" href="#">
+                            <a class="dropdown-item" href="{{url('taylor/forgot/password')}}">
                                 <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
-                                Settings
+                                Forgot Password
                             </a>
-                            <a class="dropdown-item" href="#">
-                                <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
-                                Activity Log
+                            <a  class="dropdown-item" data-toggle="modal" href="#languageModal">
+                                <i class="fa fa-language mr-2 text-gray-400" ></i>
+                                Language
                             </a>
-                            <div class="dropdown-divider"></div>
+
+                            <!-- Modal -->
+                           <div class="dropdown-divider"></div>
                             <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault();document.getElementById('logout-form').submit();">{{ __('Log out') }}
                                 <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                                     @csrf
@@ -309,13 +314,13 @@
         <!-- End of Main Content -->
 
         <!-- Footer -->
-        <footer class="sticky-footer bg-white">
-            <div class="container my-auto">
-                <div class="copyright text-center my-auto">
-                    <span>Copyright &copy; Your Website 2022</span>
-                </div>
-            </div>
-        </footer>
+        {{--<footer class="sticky-footer bg-white">--}}
+            {{--<div class="container my-auto">--}}
+                {{--<div class="copyright text-center my-auto">--}}
+                    {{--<span>Copyright &copy; Your Website 2022</span>--}}
+                {{--</div>--}}
+            {{--</div>--}}
+        {{--</footer>--}}
         <!-- End of Footer -->
 
     </div>
@@ -351,6 +356,36 @@
         </div>
     </div>
 </div>
+                              {{--Model--}}
+
+<div class="modal fade" id="languageModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Select Language</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <label class="">English
+                    <input type="radio" id="language-input_en" value="en" name="radio" checked>
+                    <span class="checkmark"></span>
+                </label><br>
+                <label class="">Urdu
+                    <input type="radio" value="ur" id="language-input_ur" name="radio">
+                    <span class="checkmark"></span>
+                </label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary save-language" data-dismiss="modal">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 
 <!-- Bootstrap core JavaScript-->
 
@@ -364,9 +399,12 @@
 <script>
 
     $getUserName = '{{URL::route('user.info')}}';
+    $setLanguage = '{{URL::route('set.language')}}';
+    $getLanguage = '{{URL::route('get.language')}}';
     $token = "{{ csrf_token() }}";
     $(document).ready(function () {
-        getUserName()
+        getUserName();
+        getLanguage();
     });
 
     function getUserName() {
@@ -387,7 +425,49 @@
                     toastr.error('Something went wrong!');
                 }
             }
-        })
+        });
+    }
+
+    $('body').on('click', '.save-language', function () {
+        var lang = $("input[name='radio']:checked").val();
+        $formData = {
+            '_token': $token,
+            lang:lang,
+        };
+        $.ajax({
+            url: $setLanguage,
+            type: 'POST',
+            data: $formData,
+            success: function (response) {
+                window.location.reload();
+                toastr.success(response.message);
+            }
+        });
+    });
+
+    function getLanguage() {
+        $formData = {
+            '_token': $token,
+        };
+        $.ajax({
+            url: $getLanguage,
+            type: 'GET',
+            data: $formData,
+            success: function (response) {
+                if (response.success == true) {
+                  if (response.data.language == 'en') {
+                      $('#language-input_en').prop('checked', true);
+                      $('#language-input_ur').prop('checked', false);
+                  } else if (response.data.language == 'ur') {
+                      $('#language-input_en').prop('checked', false);
+                      $('#language-input_ur').prop('checked', true);
+                  }
+                } else {
+                    toastr.error('Something went wrong!');
+                }
+            }
+        });
+
     }
 
 </script>

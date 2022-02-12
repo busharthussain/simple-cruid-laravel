@@ -45,3 +45,14 @@ function loginId(){
     }
     return $id;
 }
+
+
+function getLanguage()
+{
+    $lang = 'en';
+    if (\Auth::check()) {
+        $lang = \Auth::user()->language;
+    }
+
+    return $lang;
+}

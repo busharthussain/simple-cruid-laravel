@@ -62,12 +62,12 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('profile', ['as' => 'profile.edit', 'uses' => 'App\Http\Controllers\ProfileController@edit']);
 	Route::put('profile', ['as' => 'profile.update', 'uses' => 'App\Http\Controllers\ProfileController@update']);
 	Route::put('profile/password', ['as' => 'profile.password', 'uses' => 'App\Http\Controllers\ProfileController@password']);
-});
+
 
 Route::get('/customer', [App\Http\Controllers\Api\CustomerController::class, 'viewCustomer']);
 Route::get('get/customers', [App\Http\Controllers\Api\CustomerController::class, 'showCustomersView']);
 Route::get('get/all/customers', [App\Http\Controllers\Api\CustomerController::class, 'getCustomers'])->name('customer.show');
-Route::post('/save/customer', [App\Http\Controllers\Api\CustomerController::class, 'createCustomer'])->name('create.customer');
+Route::post('/save/customer', [App\Http\Controllers\Api\CustomerController::class, 'saveCustomer'])->name('save.customer');
 Route::post('customer/delete', [App\Http\Controllers\Api\CustomerController::class, 'deleteCustomer'])->name('delete.customer');
 Route::get('customer/edit/{id}', [App\Http\Controllers\Api\CustomerController::class, 'editCustomer'])->name('customer.edit');
 Route::post('customer/search', [App\Http\Controllers\Api\CustomerController::class, 'searchCustomer'])->name('customer.search');
@@ -78,7 +78,32 @@ Route::get('/taylor', [App\Http\Controllers\Api\UserController::class, 'showUser
 Route::post('/user/save', [App\Http\Controllers\Api\UserController::class, 'saveUser'])->name('signup.user');
 Route::post('/login/user', [App\Http\Controllers\Api\UserController::class, 'loginUser'])->name('login.user');
 Route::post('/getinfo', [App\Http\Controllers\Api\UserController::class, 'getUserName'])->name('user.info');
-Route::post('/user/name', [App\Http\Controllers\Api\UserController::class, 'setUserName'])->name('user.name');
+Route::post('/user/data', [App\Http\Controllers\Api\UserController::class, 'getUserData'])->name('user.data');
 Route::post('/user/image', [App\Http\Controllers\Api\UserController::class, 'setUserImage'])->name('user.image');
 
-Route::get('/profile', [App\Http\Controllers\Api\UserController::class, 'userProfile']);
+Route::get('user/profile', [App\Http\Controllers\Api\UserController::class, 'userProfile']);
+
+Route::post('save/password', [App\Http\Controllers\Api\UserController::class, 'savePassword'])->name('save.password');
+
+Route::post('send/language', [App\Http\Controllers\Api\UserController::class, 'sendLanguage'])->name('set.language');
+Route::get('get/language', [App\Http\Controllers\Api\UserController::class, 'getLanguage'])->name('get.language');
+
+Route::post('import/excel', [App\Http\Controllers\Api\UserController::class, 'importExcel'])->name('import.excel');
+Route::get('customer/invoice/{id}', [App\Http\Controllers\Api\UserController::class, 'customerInvoice']);
+Route::get('/payment', [App\Http\Controllers\Api\CustomerController::class, 'showPayment']);
+Route::post('save/payment', [App\Http\Controllers\Api\CustomerController::class, 'savePayment'])->name('save.payment');
+
+
+});
+Route::get('taylor/forgot/password', [App\Http\Controllers\Api\UserController::class, 'forgotPassword'])->name('forgot-password');
+Route::get('change/password', [App\Http\Controllers\Api\UserController::class, 'changePassword']);
+Route::post('send/otp', [App\Http\Controllers\Api\UserController::class, 'sendOtp'])->name('send.otp');
+Route::post('send/mail', [App\Http\Controllers\Api\UserController::class, 'sendMail'])->name('send.mail');
+
+
+
+Route::get('show', [App\Http\Controllers\JsController::class, 'showIndex']);
+Route::post('/save/data', [App\Http\Controllers\JsController::class, 'saveData'])->name('save.data');
+Route::get('/show/data', [App\Http\Controllers\JsController::class, 'showData'])->name('data.show');
+
+

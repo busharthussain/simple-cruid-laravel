@@ -22,12 +22,12 @@
 
 <h3 style="margin-left: 40%">Customer</h3><br>
 
-<label>First_name</label>&nbsp;<input type="text" name="first_name" id="first_name">&nbsp;&nbsp;&nbsp;
-<label>Last_name</label>&nbsp;<input type="text" name="last_name" id="last_name">&nbsp;&nbsp;&nbsp;
-<label>Address</label>&nbsp;<input type="text" name="address" id="address"><br><br>&nbsp;
-<label>Contact</label>&nbsp;<input type="text" name="contact" id="contact">&nbsp;&nbsp;&nbsp;
-<label>Length</label>&nbsp;<input type="text" name="length" id="length">&nbsp;&nbsp;&nbsp;
-<label>Shoulder</label>&nbsp;<input type="text" name="shoulder" id="shoulder">&nbsp;&nbsp;&nbsp;
+<label class="clear-data">First_name</label>&nbsp;<input type="text" name="first_name" id="first_name">&nbsp;&nbsp;&nbsp;
+<label class="customer-class clear-data">Last_name</label>&nbsp;<input type="text" name="last_name" id="last_name">&nbsp;&nbsp;&nbsp;
+<label class="customer-class clear-data">Address</label>&nbsp;<input type="text" name="address" id="address" class="customer-class"><br><br>&nbsp;
+<label class="customer-class clear-data">Contact</label>&nbsp;<input type="text" name="contact" id="contact"class="customer-class">&nbsp;&nbsp;&nbsp;
+<label class="customer-class">Length</label>&nbsp;<input type="text" name="length" id="length"class="customer-class">&nbsp;&nbsp;&nbsp;
+<label class="customer-class">Shoulder</label>&nbsp;<input type="text" name="shoulder" id="shoulder"class="customer-class">&nbsp;&nbsp;&nbsp;
 <label>Neck</label>&nbsp;<input type="text" name="neck" id="neck"><br><br>
 <label>Chest</label>&nbsp;<input type="text" name="chest" id="chest">&nbsp;&nbsp;&nbsp;
 <label>Waist</label>&nbsp;<input type="text" name="waist" id="waist">&nbsp;&nbsp;&nbsp;
@@ -57,39 +57,26 @@
 <label>Triple_Salai</label>&nbsp;<input type="text" name="triple_salai" id="triple_salai">&nbsp;&nbsp;&nbsp;
 <label>Design</label>&nbsp;<input type="text" name="design" id="design"><br><br>
 <label>Book_No</label>&nbsp;<input type="text" name="book_no" id="book_no">&nbsp;&nbsp;&nbsp;
-<label>Design_No</label>&nbsp;<input type="text" name="design_no" id="design_no"><br><br>
-<label>Note</label>&nbsp;<input type="text" name="note" id="note">&nbsp;&nbsp;&nbsp;
-<label>price</label>&nbsp;<input type="text" name="price" id="price"><br><br><br>
+<label>Design_No</label>&nbsp;<input type="text" name="design_no" id="design_no">&nbsp;&nbsp;&nbsp;
+<label class="clear-data">Suit Quantity</label>&nbsp;<input type="text" name="suit_quantity" id="suit_quantity"><br><br>
+<label class="clear-data">Total price</label>&nbsp;<input type="text" name="total_price" id="total_price">&nbsp;&nbsp;&nbsp;
+<label class="clear-data">Add price</label>&nbsp;<input type="text" name="add_price" id="add_price">&nbsp;&nbsp;&nbsp;
+<label class="clear-data">Note</label>&nbsp;<input type="text" name="note" id="note"><br><br><br>
 
-<button style="margin-left: 50%; padding: 1%" type="button" id="save-data">Save</button><br><br><br>
-
-{{--<table>--}}
-    {{--<thead>--}}
-    {{--<th>Id</th>--}}
-    {{--<th>Customer Id</th>--}}
-    {{--<th>First Name</th>--}}
-    {{--<th>Last Name</th>--}}
-    {{--<th>Address</th>--}}
-    {{--<th>Contact</th>--}}
-
-    {{--<th>Action</th>--}}
-    {{--</thead>--}}
-    {{--<tbody id="customer_data">--}}
-
-    {{--</tbody>--}}
-{{--</table>--}}
-
+<dive>
+<button style="margin-left: 30%; padding: 1%" type="button" id="save-data">Save</button>
+<button style="margin-left: 5%; padding: 1%" type="button" onclick="addRow()">Add input</button></dive><br><br><br>
+<div id="append"></div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
 
-    $saveCustomer = '{{URL::route('create.customer')}}';
-    $deleteCustomer = '{{URL::route('delete.customer')}}';
-    $showCustomer = '{{URL::route('customer.show')}}';
-    {{--$editCustomer = '{{URL::route('customer.edit')}}';--}}
+    $saveCustomer = '{{URL::route('save.customer')}}';
     $token = "{{ csrf_token() }}";
+    $countFiles = 0;
     $(document).ready(function () {
-        getCustomers();
+
+        // $('.customer-class').hide(5000);
     });
 
     $('body').on('click', '#save-data', function () {
@@ -133,7 +120,9 @@
             book_no: $('#book_no').val(),
             design_no: $('#design_no').val(),
             note: $('#note').val(),
-            price: $('#price').val(),
+            total_price: $('#total_price').val(),
+            add_price: $('#add_price').val(),
+            suit_quantity: $('#suit_quantity').val(),
         };
 
         $.ajax({
@@ -145,10 +134,8 @@
 
                     alert('Data saved successfully');
 
-                        $('#first_name').val(''),
-                        $('#last_name').val(''),
-                        $('#address').val(''),
-                        $('#contact').val('')
+                        $('.clear-data').val('')
+
                 } else {
                     toastr.error('Something went wrong!');
                 }
@@ -156,60 +143,37 @@
         });
 
     });
-    // $('body').on('click', '.delete-customer', function () {
-    //
-    //     $formData = {
-    //         '_token': $token,
-    //         id: $(this).attr('id')
-    //
-    //     };
-    //     $.ajax({
-    //         url: $deleteCustomer,
-    //         type: 'POST',
-    //         data: $formData,
-    //         success: function (response) {
-    //             if (response.success == true) {
-    //                 getCustomers();
-    //                 alert('Data delete successfully');
-    //
-    //             } else {
-    //                 toastr.error('Something went wrong!');
-    //             }
-    //         }
-    //     });
-    //
-    // })
-    // function getCustomers() {
-    //     $.ajax({
-    //         url: $showCustomer,
-    //         type: 'GET',
-    //         data: {},
-    //         success: function (response) {
-    //             if (response.success == true) {
-    //                 $('#customer_data').html('');
-    //                     $.each(response.data, function (i, v) {
-    //                         var tabletData = '';
-    //                         $.each(v, function (ii, vv) {
-    //                             if(ii == 'id'){
-    //                                 tabletData += '<td xmlns="http://www.w3.org/1999/html"><button class="delete-customer" id="'+vv+'">Delete</button><br><br><button class="edit-customer" id="'+vv+'">Edit</button></td>'
-    //                             }else{
-    //                                 tabletData += '<td>'+vv+'</td>'
-    //
-    //                             }
-    //                         })
-    //
-    //                         var html = '<tr>'+tabletData+'</tr>';
-    //                         $('#customer_data').append(html);
-    //                     });
-    //             }
-    //         }
-    //     });
-    // }
-    {{--$('body').on('click', '.edit-customer', function () {--}}
-        {{--var id = $(this).attr('id');--}}
-        {{--var rout = '{{url('loginuser/')}}'+'/'+id;--}}
-        {{--window.location.href = rout;--}}
-    {{--})--}}
+
+    /**
+     * This is used to add new rows on click of attach more file
+     */
+    function addRow() {
+        $countFiles++;
+        if ($countFiles != 0) {
+            $functionCall = 'remove(' + $countFiles + ')';
+            $icon = 'fa-minus';
+            $margin = '3%';
+            $marginright = '70%';
+        }
+        var new_input = '<div class="form-group" id="div_'+$countFiles+'" style="margin-top: '+$margin+'; margin-right: '+$marginright+'">\n' +
+            '    <div class="input-group mb-3" >\n' +
+            '        <label>Size '+$countFiles+'</label>\n' +
+            '        <input type="text" class="form-control" id="input_'+$countFiles+'" name="input_'+$countFiles+'">\n' +
+            '        <div class="input-group-append" onclick="' + $functionCall + '">\n' +
+            '               <a class="btn btn-danger" id="basic-addon2_' + $countFiles + '"><i\n' +
+            '                 style="color: white;" class="fas ' + $icon + '"></i></a>' +
+            '        </div>\n' +
+            '    </div>\n' +
+            '</div>';
+
+
+        $('#append').append(new_input);
+    }
+
+    function remove(id)
+    {
+        $('#div_' + id).remove();
+    }
 
 
 </script>

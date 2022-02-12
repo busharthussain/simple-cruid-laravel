@@ -67,6 +67,7 @@
     .stats span {
     font-size: 29px
     }
+    /*For Language Popup*/
 </style>
 
     <div class="container d-flex justify-content-center align-items-center" style="margin-top: -5%;">
@@ -80,17 +81,37 @@
                     {{--<button style="margin-top: 13%;" type="submit">submit</button>--}}
                 {{--</form>--}}
             </div>
+                {{--Model--}}
+                <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Enter OTP</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body col-sm-12">
+                                <input type="text" name="otp" id="otp" placeholder="enter otp...">
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-primary" id="send-otp">Send</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             <div class="mt-5 text-center">
-                <span class="mb-0 user-name "></span> <span class="text-muted d-block mb-2 user-address">Los Angles</span> <br><br>
+                <span class="mb-0 user-name "></span> <span class="text-muted d-block mb-2 user-address"></span> <br><br>
                 <div class="d-flex justify-content-between align-items-center mt-4 px-4">
                     <div class="stats">
-                        <h6 class="mb-0">Customer</h6> <span class="user-count">0</span>
+                        <h6 class="mb-0">Customer</h6> <span class="customer-count">0</span>
                     </div>
                     <div class="stats">
-                        <h6 class="mb-0">Suit</h6> <span>8,348</span>
+                        <h6 class="mb-0">Suit</h6> <span class="customer-suit">0</span>
                     </div>
                     <div class="stats">
-                        <h6 class="mb-0">Earn</h6> <span>5843600</span>
+                        <h6 class="mb-0">Earn</h6> <span class="customer-price">0</span>
                     </div>
                 </div>
             </div>
@@ -98,29 +119,32 @@
     </div>
 @endsection
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
+        <script>
 
     $saveImage = '{{URL::route('user.image')}}';
-    $setUserName = '{{URL::route('user.name')}}';
+    $getUserData = '{{URL::route('user.data')}}';
     $token = "{{ csrf_token() }}";
     $(document).ready(function () {
-        getUserName();
-        function getUserName() {
+        getUserData();
+    });
+        function getUserData() {
             $formData = {
                 '_token': $token,
             };
             $.ajax({
-                url: $setUserName,
+                url: $getUserData,
                 type: 'POST',
                 data: $formData,
                 success: function (response) {
                     if (response.success == true) {
-                        console.log(response.data.name);
-                        $('.user-name').html(response.data.name);
-                        $('.user-address').html(response.data.address);
-                        $('.user-count').html(response.data.count);
+
+                        $('.user-name').html(response.data.user.name);
+                        $('.user-address').html(response.data.user.address);
+                        $('.customer-count').html(response.data.count);
+                        $('.customer-price').html(response.data.price);
+                        $('.customer-suit').html(response.data.suit);
                         var imagePath = '{{asset('userimages')}}';
-                        $('.append-image').attr('src', imagePath + '/' + response.data.image)
+                        $('.append-image').attr('src', imagePath + '/' + response.data.user.image)
 
                     } else {
                         toastr.error('Something went wrong!');
@@ -128,31 +152,38 @@
                 }
             })
         }
-        $('#image').click(function(){
-            $('#myfile').click()
-        })
-        $('#save-image').submit(function (e) {
-            e.preventDefault();
-            var formData = new FormData(this);
-            $.ajax({
-                url:$saveImage,
-                type: 'POST',
-                data:formData,
-                contentType: false,
-                processData: false,
-                success:function (response) {
-                    if (response.success == true) {
-                        var imagePath = '{{asset('userimages')}}';
-                        $('.append-image').attr('src', imagePath + '/' + response.data.image)
 
-                    } else {
-                        toastr.error('Something went wrong!');
-                    }
+        // This is not use here.
 
-                }
-            })
-        });
-    });
+        // $('#image').click(function(){
+        //     $('#myfile').click()
+        // })
+        // --------------------------------------------------------------
+
+        // This is not use here. It's use in user profile blade
+
+        {{--$('#save-image').submit(function (e) {--}}
+            {{--e.preventDefault();--}}
+            {{--var formData = new FormData(this);--}}
+            {{--$.ajax({--}}
+                {{--url:$saveImage,--}}
+                {{--type: 'POST',--}}
+                {{--data:formData,--}}
+                {{--contentType: false,--}}
+                {{--processData: false,--}}
+                {{--success:function (response) {--}}
+                    {{--if (response.success == true) {--}}
+                        {{--var imagePath = '{{asset('userimages')}}';--}}
+                        {{--$('.append-image').attr('src', imagePath + '/' + response.data.image)--}}
+
+                    {{--} else {--}}
+                        {{--toastr.error('Something went wrong!');--}}
+                    {{--}--}}
+
+                {{--}--}}
+            {{--})--}}
+        {{--});--}}
+
 
 
 

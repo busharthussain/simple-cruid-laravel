@@ -73,11 +73,11 @@
       {{--</form>--}}
       <div class="row">
         <div class="col-6">
-            @if (Route::has('password.request'))
-                <a href="{{ route('password.request') }}" class="text-light">
+            {{--@if (Route::has('password.request'))--}}
+                <a href="{{ route('forgot-password') }}" class="text-light">
                     <small>{{ __('Forgot password?') }}</small>
                 </a>
-            @endif
+            {{--@endif--}}
         </div>
         <div class="col-6 text-right">
             <a href="{{ route('register') }}" class="text-light">

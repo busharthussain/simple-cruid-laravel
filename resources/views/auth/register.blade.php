@@ -69,6 +69,21 @@
                 </div>
               @endif
             </div>
+            <div class="bmd-form-group{{ $errors->has('email') ? ' has-danger' : '' }} mt-3">
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">
+                    <i class="material-icons">email</i>
+                  </span>
+                </div>
+                <input type="text" name="email" class="form-control" placeholder="{{ __('Email...') }}" value="{{ old('email') }}">
+              </div>
+              @if ($errors->has('email'))
+                <div id="email-error" class="error text-danger pl-3" for="email" style="display: block;">
+                  <strong>{{ $errors->first('email') }}</strong>
+                </div>
+              @endif
+            </div>
 
             <div class="bmd-form-group{{ $errors->has('address') ? ' has-danger' : '' }} mt-3">
               <div class="input-group">

@@ -41,8 +41,11 @@
 <label>Design</label>&nbsp;<input type="text" name="design" id="design" value="{{$obj->design}}"><br><br>
 <label>Book_No</label>&nbsp;<input type="text" name="book_no" id="book_no" value="{{$obj->book_no}}">&nbsp;&nbsp;&nbsp;
 <label>Design_No</label>&nbsp;<input type="text" name="design_no" id="design_no" value="{{$obj->design_no}}">&nbsp;&nbsp;&nbsp;
-<label>Note</label>&nbsp;<input type="text" name="note" id="note" value="{{$obj->note}}">&nbsp;&nbsp;&nbsp;
-<label>price</label>&nbsp;<input type="text" name="price" id="price" value="{{$obj->price}}"><br><br><br>
+<label>Suit Quantity</label>&nbsp;<input type="text" name="suit_quantity" id="suit_quantity" value="{{$obj->suit_quantity}}"><br><br>
+<label>Total price</label>&nbsp;<input type="text" name="total_price" id="total_price" value="{{$obj->total_price}}">&nbsp;&nbsp;&nbsp;
+<label>Add price</label>&nbsp;<input type="text" name="add_price" id="add_price" value="{{$obj->add_price}}">&nbsp;&nbsp;&nbsp;
+<label>Note</label>&nbsp;<input type="text" name="note" id="note" value="{{$obj->note}}"><br><br><br>
+
 
 <button style="margin-left: 40%; padding: 1%" type="button" id="update-customer">Update</button>
 
@@ -146,10 +149,10 @@
             design: $('#design').val(),
             book_no: $('#book_no').val(),
             design_no: $('#design_no').val(),
+            suit_quantity:$('#suit_quantity').val(),
+            total_price: $('#total_price').val(),
+            add_price: $('#add_price').val(),
             note: $('#note').val(),
-            price: $('#price').val(),
-
-
         };
         $.ajax({
             url: $updateCustomer,

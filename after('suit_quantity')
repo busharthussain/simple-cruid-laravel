@@ -1,0 +1,21 @@
+
+   InvalidArgumentException 
+
+  A AddTotalPriceToCustomersTable class already exists.
+
+  at C:\xampp\htdocs\simple-cruid-laravel\vendor\laravel\framework\src\Illuminate\Database\Migrations\MigrationCreator.php:102
+     98▕             }
+     99▕         }
+    100▕ 
+    101▕         if (class_exists($className = $this->getClassName($name))) {
+  ➜ 102▕             throw new InvalidArgumentException("A {$className} class already exists.");
+    103▕         }
+    104▕     }
+    105▕ 
+    106▕     /**
+
+  1   C:\xampp\htdocs\simple-cruid-laravel\vendor\laravel\framework\src\Illuminate\Database\Migrations\MigrationCreator.php:59
+      Illuminate\Database\Migrations\MigrationCreator::ensureMigrationDoesntAlreadyExist("add_total_price_to_customers_table", "C:\xampp\htdocs\simple-cruid-laravel\database\migrations")
+
+  2   C:\xampp\htdocs\simple-cruid-laravel\vendor\laravel\framework\src\Illuminate\Database\Console\Migrations\MigrateMakeCommand.php:110
+      Illuminate\Database\Migrations\MigrationCreator::create("add_total_price_to_customers_table", "C:\xampp\htdocs\simple-cruid-laravel\database\migrations", "customers-")

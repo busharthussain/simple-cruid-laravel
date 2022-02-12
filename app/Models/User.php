@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
+use Grid;
+use Illuminate\Support\Facades\DB;
 
 class User extends Authenticatable
 {
@@ -17,10 +19,64 @@ class User extends Authenticatable
      *
      * @var array
      */
-    protected $fillable = [ 'password', 'name', 'shop_name', 'address', 'contact', 'confirm_password'
+    protected $fillable = [ 'password', 'name', 'shop_name', 'address', 'contact','email', 'confirm_password'
 
 
     ];
+
+
+
+    public static function getData($params)
+    {
+        $sql = DB::table('Users as p');
+        $sql->select('p.name','p.shop_name','p.contact','p.email', 'p.address'
+        );
+        if (!empty($params['search'])) {
+            $search = '%' . $params['search'] . '%';
+            $sql->where('p.first_name', 'like', $search);
+        }
+        $grid = [];
+        $grid['query'] = $sql;
+        $grid['perPage'] = $params['perPage'];
+        $grid['page'] = $params['page'];
+        $grid['gridFields'] = self::gridFieldsProduct();
+
+        return Grid::runSql($grid);
+    }
+
+    public static function gridFieldsProduct()
+    {
+
+        $arrFields = [
+            'name' => [
+                'name' => 'name',
+                'isDisplay' => true
+            ],
+
+            'Shop' => [
+                'name' => 'shop_name',
+                'isDisplay' => true,
+            ],
+
+            'Contact' => [
+                'name' => 'contact',
+                'isDisplay' => true,
+            ],
+
+            'Email' => [
+                'name' => 'email',
+                'isDisplay' => true,
+            ],
+
+            'Address' => [
+                'name' => 'address',
+                'isDisplay' => true
+            ],
+
+        ];
+
+        return $arrFields;
+    }
 
     /**
      * The attributes that should be hidden for arrays.
